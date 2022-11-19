@@ -20,7 +20,7 @@ def process_response(db_response: dict | list) -> dict | list:
             document["_id"] = str(document["_id"])
         return db_response
     elif isinstance(db_response, dict):
-        db_response["_id"] = db_response(document["_id"])
+        db_response["_id"] = str(db_response["_id"])
         return db_response
     else:
         raise ValueError(

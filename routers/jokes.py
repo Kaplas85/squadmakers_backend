@@ -53,10 +53,16 @@ async def get_jokes(owner: str | None = Query(None, max_length=5)):
     return response
 
 
-@router.get("/created", name="List All Jokes Created")
+@router.get(
+    "/created",
+    responses={404: {"description": "Jokes not found"}},
+    name="List All Jokes Created",
+)
 async def list_all_jokes():
     """Extra endpoint, created to see all created jokes"""
     documents = list(db.jokes.find({}))
+    if len(documents) <= 0:
+        raise HTTPException(404, "Jokes not found")
     return process_response(documents)
 
 
@@ -81,7 +87,10 @@ async def create_jokes(joke: jokes.JokeBase = Body(...)):
 
 @router.put(
     "/{joke_id}/",
-    responses={400: {"description": "Joke not exists or the ID is invalid"}},
+    responses={
+        404: {"description": "Joke ID not exists"},
+        400: {"description": "Joke ID is invalid"},
+    },
 )
 async def update_joke(
     joke_id: str = Path(..., title="Joke ID"),
@@ -94,7 +103,7 @@ async def update_joke(
 
     try:
         if not check_if_item_exists(db, "jokes", joke_id):
-            raise HTTPException(400, "Joke not exists.")
+            raise HTTPException(404, "Joke not exists.")
 
         db.jokes.update_one(
             {"_id": ObjectId(joke_id)},
@@ -108,7 +117,10 @@ async def update_joke(
 
 @router.delete(
     "/{joke_id}/",
-    responses={400: {"description": "Joke not exists or the ID is invalid"}},
+    responses={
+        404: {"description": "Joke ID not exists"},
+        400: {"description": "Joke ID is invalid"},
+    },
 )
 async def delete_joke(joke_id: str = Path(..., title="Joke ID")):
     """
@@ -117,7 +129,7 @@ async def delete_joke(joke_id: str = Path(..., title="Joke ID")):
 
     try:
         if not check_if_item_exists(db, "jokes", joke_id):
-            raise HTTPException(400, "Joke not exists.")
+            raise HTTPException(404, "Joke not exists.")
 
         db.jokes.delete_one({"_id": ObjectId(joke_id)})
         return

@@ -16,15 +16,15 @@ async def sum_one_a_number(number: float = Query(...)):
 
 
 @router.get(path="/lcm/")
-async def calc_lcm(number_list: List[int] = Query(...)):
+async def calc_lcm(numbers: List[int] = Query(...)):
     """
     Calculate the L.C.M from a integer number list
     """
-    max_value: int = max(number_list)
+    max_value: int = max(numbers)
 
     while True:
         results_list: list = []
-        for number in number_list:
+        for number in numbers:
             results_list.append(max_value % number)
 
         if sum(results_list) == 0:

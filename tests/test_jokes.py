@@ -9,7 +9,6 @@ client = TestClient(app)
 
 BAD_ID = "63784423d0aaf6b3f8bbFFFF"
 INVALID_ID = "223344"
-created_joke_id = ""
 
 
 def test_chuck():

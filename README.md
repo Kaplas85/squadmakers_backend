@@ -55,4 +55,23 @@ docker compose logs -f
 </br>
 <hr/>
 </br>
-Gracias por su tiempo.
+
+## 🧠 Preguntas y Respuestas de la Prueba
+
+1. **¿Qué repositorio (base de datos) utilizaría?** Totalmente MongoDB. En primer lugar porque al no tener necesidad de relacionar datos, es más sencillo, tener una base de datos clave - valor. Al mismo tiempo las DB NoSQL son más economicas, así que si fuera un caso real, tendria mayor versatilidad en lectura de datos y a un mejor precio.
+2. **Sentencia SQL para Crear la DB**
+   ```sql
+   CREATE DATABASE squadMakersDatabase;
+
+   CREATE TABLE Jokes (
+    id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    owner VARCHAR(5) NULL,
+    joke VARCHAR(255)
+   );
+   ```
+3. **Sentencia NoSQL para Crear la DB**
+    ```bash
+   # En Mongo CLI
+   use squadMakersDatabase
+   db.jokes.insert_one({"joke": "Some funy joke"})
+   ```

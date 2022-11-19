@@ -7,7 +7,17 @@ DAD_API: str = "https://icanhazdadjoke.com/"
 
 
 async def get_external_jokes(owner: str) -> str:
+    """Check the owner value and return a joke from external database
 
+    Args:
+        owner (str): owner name (Chuck or Dad)
+
+    Raises:
+        ValueError: If the owner not exists, return that error
+
+    Returns:
+        str: the joke
+    """
     HEADERS = {"accept": "application/json"}
 
     if owner == "chuck":

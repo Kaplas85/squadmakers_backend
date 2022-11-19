@@ -28,6 +28,11 @@ router = APIRouter(prefix="/jokes", tags=["Jokes"])
     response_model=jokes.JokeOut,
 )
 async def get_jokes(owner: str | None = Query(None, max_length=5)):
+    """
+    Check if the owner path param exists and compare with the OWNERS_LIST
+    if owner is pased and exists in the list, get the joke from the
+    external databases
+    """
 
     OWNERS_LIST = ["chuck", "dad"]
 
@@ -40,6 +45,7 @@ async def get_jokes(owner: str | None = Query(None, max_length=5)):
             detail=f"The owner value '{owner}' not exists",
         )
     else:
+        # if owner param is not pased, return a random choice
         SELECTED_OWNER = random.choice(OWNERS_LIST)
         joke: str = await get_external_jokes(SELECTED_OWNER)
         response = {"owner": SELECTED_OWNER, "joke": joke}
@@ -49,7 +55,7 @@ async def get_jokes(owner: str | None = Query(None, max_length=5)):
 
 @router.get("/created", name="List All Jokes Created")
 async def list_all_jokes():
-
+    """Extra endpoint, created to see all created jokes"""
     documents = list(db.jokes.find({}))
     return process_response(documents)
 
@@ -63,6 +69,9 @@ async def list_all_jokes():
     status_code=201,
 )
 async def create_jokes(joke: jokes.JokeBase = Body(...)):
+    """
+    Create a joke and save it in the database
+    """
     try:
         db.jokes.insert_one(dict(joke))
     except:
@@ -78,6 +87,9 @@ async def update_joke(
     joke_id: str = Path(..., title="Joke ID"),
     data: jokes.JokeBase = Body(..., title="Joke content"),
 ):
+    """
+    Update a existing joke. If the ID is bad write or ID not exists, return a 400 error
+    """
     new_data = dict(data)
 
     try:
@@ -99,6 +111,9 @@ async def update_joke(
     responses={400: {"description": "Joke not exists or the ID is invalid"}},
 )
 async def delete_joke(joke_id: str = Path(..., title="Joke ID")):
+    """
+    Delete a joke from database using the ID
+    """
 
     try:
         if not check_if_item_exists(db, "jokes", joke_id):
